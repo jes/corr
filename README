@@ -1,0 +1,20 @@
+This is code and data for my traffic correlation experiment.
+
+Read more in my blog post at https://incoherency.co.uk/blog/stories/traffic-correlation.html
+
+To reproduce it yourself you'll need to edit sync-logs and score-logs to use your own machine's hostnames,
+and you'll need to manually run log-tx-packets on each of your machines, including the one that is
+hosting the hidden service.
+
+Make sure you sync the clocks with ntpdate or similar before starting.
+
+Modify fetch-site so that it fetches your hidden service instead of mine.
+
+Then, with log-tx-packets logging data to a file on each machine (I assumed in ~/corr/log, modify sync-logs if that's not it),
+leave fetch-site running.
+
+Periodically check on your progress with "./sync-logs && ./score-logs".
+
+Pretty ghetto, but demonstrates the concept.
+
+Feel free to contact me at james@incoherency.co.uk if you want to talk about it any more.
