@@ -1,6 +1,6 @@
 #!/bin/sh
 
-for host in a b c d e
+for host in scaryspice sportyspice babyspice gingerspice poshspice
 do
     scp $host:corr/log $host.log
 done
