@@ -1,0 +1,24 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use Time::HiRes qw(time usleep);
+
+my $onion = 'jesblogfnk2boep4.onion';
+
+while (1) {
+    # sleep until the top of the next second
+    my $ts = time;
+    $ts = $ts - int($ts); # only keep sub-second part
+    my $us_remain = (1-$ts) * 1000000;
+    usleep($us_remain);
+
+    # only fetch on divisible-by-4 seconds
+    $ts = int(time);
+    if ($ts%4 == 0) {
+        print "> " . time . "\n";
+        system("torsocks curl -s http://$onion/ > /dev/null");
+        print "< " . time . "\n";
+    }
+}

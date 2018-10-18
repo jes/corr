@@ -1,0 +1,52 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+my $acc = 0;
+
+my @lines;
+
+while (<>) {
+    chomp;
+    my ($ts, $packets) = split /\t/;
+
+    push @lines, [$ts, $packets];
+}
+
+# sort by number of packets
+@lines = sort { $a->[1] <=> $b->[1] } @lines;
+
+# calculate the mean
+my $mean = 0;
+my $N = 0;
+for my $line (@lines) {
+    my ($ts, $packets) = @$line;
+
+    # discard outliers at 95th percentile of too-much or too-little
+    next if $packets > $lines[@lines*0.95][1] || $packets < $lines[@lines*0.05][1];
+
+    $mean += $packets;
+    $N++;
+}
+
+$mean /= $N;
+
+for my $line (@lines) {
+    my ($ts, $packets) = @$line;
+
+    # discard outliers at 95th percentile of too-much or too-little (substitute for a mean packet size instead)
+    if ($packets > $lines[@lines*0.95][1] || $packets < $lines[@lines*0.05][1]) {
+        $packets = $mean;
+    }
+
+    if ($ts%4 < 2) {
+        $acc += $packets;
+    } else {
+        $acc -= $packets;
+    }
+}
+
+$acc /= $mean;
+
+print "$acc\n";

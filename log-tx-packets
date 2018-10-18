@@ -1,0 +1,33 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use Time::HiRes qw(time usleep);
+
+my $iface = 'eth0';
+
+my $oldpackets = get_packets();
+
+while (1) {
+    # sleep until the top of the next second
+    my $ts = time;
+    $ts = $ts - int($ts); # only keep sub-second part
+    my $us_remain = (1-$ts) * 1000000;
+    usleep($us_remain);
+
+    $ts = time;
+    $ts = int($ts);
+    my $newpackets = get_packets();
+    print "$ts\t" . ($newpackets - $oldpackets) . "\n";
+    $oldpackets = $newpackets;
+}
+
+sub get_packets {
+    my $line = `/sbin/ifconfig $iface | grep 'TX packets'`;
+    if ($line =~ /TX packets (\d+)/) {
+        return $1;
+    } else {
+        die "can't parse: $line\n";
+    }
+}

@@ -1,0 +1,6 @@
+#!/bin/sh
+
+for host in a b c d e
+do
+    scp $host:corr/log $host.log
+done
